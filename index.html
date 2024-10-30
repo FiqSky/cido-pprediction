@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crypto Price Prediction</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
@@ -13,24 +14,30 @@
 
     <!-- Form Wrapper -->
     <div id="formWrapper">
-      <!-- Market Cap Input -->
+      <!-- Market Cap Input with Enhanced Accessibility -->
       <div class="mb-4">
         <label for="marketCap" class="block text-gray-700 font-semibold mb-1">Market Cap</label>
         <div class="flex">
           <input type="number" id="marketCap" placeholder="e.g., 100" class="w-3/4 p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <select id="marketCapUnit" class="w-1/4 p-3 border-l-0 border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          
+          <!-- Market Cap Unit Selector with Accessibility Enhancements -->
+          <label for="marketCapUnit" class="sr-only">Select Unit for Market Cap</label>
+          <select id="marketCapUnit" title="Market Cap Unit" aria-label="Market Cap Unit" class="w-1/4 p-3 border-l-0 border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="1000000">Million</option>
             <option value="1000000000">Billion</option>
           </select>
         </div>
       </div>
 
-      <!-- Total Supply Input -->
+      <!-- Total Supply Input with Enhanced Accessibility -->
       <div class="mb-6">
         <label for="totalSupply" class="block text-gray-700 font-semibold mb-1">Total Supply</label>
         <div class="flex">
           <input type="number" id="totalSupply" placeholder="e.g., 1000" class="w-3/4 p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <select id="totalSupplyUnit" class="w-1/4 p-3 border-l-0 border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          
+          <!-- Total Supply Unit Selector with Accessibility Enhancements -->
+          <label for="totalSupplyUnit" class="sr-only">Select Unit for Total Supply</label>
+          <select id="totalSupplyUnit" title="Total Supply Unit" aria-label="Total Supply Unit" class="w-1/4 p-3 border-l-0 border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="1000000">Million</option>
             <option value="1000000000">Billion</option>
           </select>
