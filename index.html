@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Price Prediction</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
+  <div class="bg-white shadow-lg rounded-lg p-6 max-w-md w-full mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Crypto Price Prediction Calculator</h1>
+
+    <!-- Form Wrapper -->
+    <div id="formWrapper">
+      <!-- Market Cap Input -->
+      <div class="mb-4">
+        <label for="marketCap" class="block text-gray-700 font-semibold mb-1">Market Cap</label>
+        <div class="flex">
+          <input type="number" id="marketCap" placeholder="e.g., 100" class="w-3/4 p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <select id="marketCapUnit" class="w-1/4 p-3 border-l-0 border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="1000000">Million</option>
+            <option value="1000000000">Billion</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Total Supply Input -->
+      <div class="mb-6">
+        <label for="totalSupply" class="block text-gray-700 font-semibold mb-1">Total Supply</label>
+        <div class="flex">
+          <input type="number" id="totalSupply" placeholder="e.g., 1000" class="w-3/4 p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <select id="totalSupplyUnit" class="w-1/4 p-3 border-l-0 border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="1000000">Million</option>
+            <option value="1000000000">Billion</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Calculate Button -->
+      <button onclick="calculatePrice()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded mb-4">
+        Check Price
+      </button>
+    </div>
+
+    <!-- Display Result -->
+    <div id="result" class="mt-6"></div>
+
+    <!-- Reset Button -->
+    <button onclick="resetForm()" id="resetButton" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded mt-4 hidden">
+      Reset
+    </button>
+  </div>
+
+  <script>
+    let exchangeRateToIDR = 15000; // Kurs default
+
+    function fetchExchangeRate() {
+      axios.get('https://api.exchangerate-api.com/v4/latest/USD')
+        .then(response => {
+          exchangeRateToIDR = response.data.rates.IDR;
+        })
+        .catch(error => {
+          console.error("Error fetching exchange rate: ", error);
+        });
+    }
+
+    window.onload = fetchExchangeRate;
+
+    function calculatePrice() {
+      const marketCapInput = document.getElementById("marketCap").value;
+      const totalSupplyInput = document.getElementById("totalSupply").value;
+      const marketCapUnit = parseFloat(document.getElementById("marketCapUnit").value);
+      const totalSupplyUnit = parseFloat(document.getElementById("totalSupplyUnit").value);
+
+      if (!marketCapInput || !totalSupplyInput || isNaN(marketCapInput) || isNaN(totalSupplyInput)) {
+        document.getElementById("result").innerHTML = "<p class='text-red-500'>Masukkan nilai yang valid!</p>";
+        return;
+      }
+
+      const marketCap = parseFloat(marketCapInput) * marketCapUnit;
+      const totalSupply = parseFloat(totalSupplyInput) * totalSupplyUnit;
+
+      if (totalSupply === 0) {
+        document.getElementById("result").innerHTML = "<p class='text-red-500'>Total Supply tidak boleh nol!</p>";
+        return;
+      }
+
+      const priceUSD = marketCap / totalSupply;
+      const priceIDR = priceUSD * exchangeRateToIDR;
+
+      document.getElementById("result").innerHTML = `
+        <div class="p-6 bg-white rounded-lg shadow-lg text-center space-y-4">
+          <div class="bg-gray-200 p-3 rounded-lg">
+            <p class="text-lg font-semibold text-gray-700 mb-1">Rumus Perhitungan:</p>
+            <p class="text-sm text-gray-600">Harga Token = (Market Cap) / (Total Supply)</p>
+          </div>
+
+          <div>
+            <p class="text-lg font-semibold text-gray-700 mb-2">Hasil Perhitungan:</p>
+            <div class="text-gray-800 text-lg font-bold flex justify-center items-center space-x-2">
+              <span class="text-blue-600">${marketCap.toLocaleString()} USD</span>
+              <span class="text-gray-500">/</span>
+              <span class="text-blue-600">${totalSupply.toLocaleString()} Tokens</span>
+              <span class="text-gray-500">=</span>
+            </div>
+            <div class="mt-3">
+              <span class="text-3xl font-bold text-green-600">$${priceUSD.toFixed(4)} USD</span>
+              <p class="text-gray-500 text-sm">(atau Rp${priceIDR.toLocaleString()} IDR)</p>
+            </div>
+          </div>
+
+          <p class="text-sm text-gray-500 mt-4">Kurs saat ini: 1 USD = Rp${exchangeRateToIDR.toLocaleString()}</p>
+        </div>`;
+
+      document.getElementById("formWrapper").style.display = "none";
+      document.getElementById("resetButton").style.display = "block";
+    }
+
+    function resetForm() {
+      document.getElementById("marketCap").value = "";
+      document.getElementById("totalSupply").value = "";
+      document.getElementById("result").innerHTML = "";
+      document.getElementById("formWrapper").style.display = "block";
+      document.getElementById("resetButton").style.display = "none";
+    }
+  </script>
+</body>
+</html>
